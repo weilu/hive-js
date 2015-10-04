@@ -21,6 +21,8 @@ add the following config in `/usr/local/etc/couchdb/local.ini`:
 
     [httpd]
     enable_cors = true
+    port = 5984
+    bind_address = 127.0.0.1
 
     [cors]
     credentials = true
