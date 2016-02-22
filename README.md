@@ -1,4 +1,4 @@
-hive-js
+auroracoin-js
 =======
 
 Work in progress
