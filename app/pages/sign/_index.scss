@@ -14,10 +14,113 @@
             padding-left: 40px;
         }
     }
+
 }
 
 .sign {
     display: block;
+}
+
+.sign__form {
+    padding: 20px;
+}
+
+.sign__message {
+
+    position: relative;
+    margin-bottom: 20px;
+
+    .input__container {
+        position: relative;
+        margin-top: 5px;
+    }
+
+    ._label {
+        @include noselect;
+        cursor: pointer;
+        display: block;
+        flex: 1;
+        margin-right: 10px;
+
+        @include breakpoint(portrait) {
+            font-size: 20px;
+        }
+    }
+
+    ._btn {
+        @extend .hivebtn;
+        margin-top: 29px;
+        padding: 0;
+        width: 42px;
+        height: 42px;
+        position: relative;
+
+        @include breakpoint(portrait) {
+            margin-top: 35px;
+            width: 59px;
+            height: 59px;
+        }
+
+        ._icon {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -15px;
+            margin-left: -15px;
+
+            @include breakpoint(portrait) {
+                width: 44px;
+                height: 44px;
+                margin-top: -22px;
+                margin-left: -22px;
+            }
+        }
+    }
+
+    ._input {
+        @extend .generic_box;
+        @extend .jigsaw-light;
+        padding-left: 10px;
+        height: auto;
+        margin: 0;
+        border-radius: 0;
+        border-top-right-radius: 2px;
+        border-top-left-radius: 2px;
+        position: relative;
+        z-index: 200;
+
+        &:active, &:focus {
+                      outline: 0;
+                      border: 1px solid $blue;
+                  }
+
+        @include breakpoint(portrait) {
+            font-size: 26px;
+            border-radius: 3px;
+        }
+    }
+
+}
+
+.sign__result {
+    @include monospaced;
+    @include border-radius(2px);
+    margin: 15px auto;
+    max-width: 280px;
+    padding: 5px;
+    background-color: $bitlox-gray-dark;
+    word-wrap: break-word;
+}
+
+.sign__btn {
+    @extend .hivebtn;
+
+    @include breakpoint(portrait) {
+        font-size: 26px;
+        border-radius: 3px;
+    }
 }
 
 .sign__item {
