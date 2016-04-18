@@ -1,0 +1,10 @@
+
+<div class="sign">
+    {{#addresses}}
+    <div on-click="sign-message"
+         class="sign__item">
+        <span class="_arrow">{{>svg_arrow}}</span>
+        <h3 class="_name">{{this}}</h3>
+    </div>
+    {{/addresses}}
+</div>

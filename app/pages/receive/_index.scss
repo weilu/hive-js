@@ -7,6 +7,14 @@
   }
 }
 
+#qr-canvas {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  background-color: $foreground;
+}
+
 .address__box {
   @extend .generic_box;
   margin-top: 5px;
@@ -23,7 +31,7 @@
     @include textselect;
     @extend .jigsaw-light;
     display: block;
-    padding-right: 40px;
+    font-size: 14px;
   }
 
   ._btn {

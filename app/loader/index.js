@@ -17,47 +17,43 @@ var languages = require('hive-i18n').languages
 document.getElementsByTagName('html')[0].classList.add(token)
 
 var elems =  {
-  block1: document.getElementById('logo_block1'),
-  block2: document.getElementById('logo_block2'),
-  block3: document.getElementById('logo_block3'),
-  block4: document.getElementById('logo_block4'),
-  block5: document.getElementById('logo_block5'),
+    block1: document.getElementById('logo_block1'),
+    block2: document.getElementById('logo_block2'),
+    block3: document.getElementById('logo_block3'),
+    block4: document.getElementById('logo_block4'),
+    block5: document.getElementById('logo_block5'),
 }
 
 var containerEl = document.getElementById('loader')
 var keyEl = document.getElementById('logo_key')
 var goodToGo;
 
-animateLogo(elems)
 
 Modernizr.on('indexeddb', function(hasIndexedDB){
-  var supportsPouchDB = hasIndexedDB || Modernizr.websqldatabase
-  var language = findTranslation()
+    var supportsPouchDB = hasIndexedDB || Modernizr.websqldatabase
+    var language = findTranslation()
 
-  Modernizr.load({
-    test: supportsPouchDB && (Modernizr.localstorage && Modernizr.webworkers && Modernizr.blobconstructor && Modernizr.getrandomvalues),
-    yep: 'assets/js/application-' + language + '.js',
-    nope: 'assets/js/nope-' + language + '.js',
-    callback: function(testResult, key) {
-      goodToGo = key
-    },
-    complete: function() {
-      if(goodToGo) {
-        setTimeout(function(){
-          fadeOut(containerEl, keyEl)
-        }, 1000)
-      }
-    }
-  })
+    Modernizr.load({
+        test: supportsPouchDB && (Modernizr.localstorage && Modernizr.webworkers && Modernizr.blobconstructor && Modernizr.getrandomvalues),
+        yep: 'assets/js/application-' + language + '.js',
+        nope: 'assets/js/nope-' + language + '.js',
+        callback: function(testResult, key) {
+            goodToGo = key
+        },
+        complete: function() {
+            if(goodToGo) {
+                window.initHiveApp()
+            }
+        }
+    })
 })
 
 function findTranslation(){
-  var language = navigator.language.toLocaleLowerCase() || 'en'
-  return languages.filter(function(l){
-    return language === l || language.substr(0, 2) === l
-  })[0] || 'en'
+    var language = navigator.language.toLocaleLowerCase() || 'en'
+    return languages.filter(function(l){
+        return language === l || language.substr(0, 2) === l
+    })[0] || 'en'
 }
 
 //monkey patch URL for safari 6
 window.URL = window.URL || window.webkitURL
-

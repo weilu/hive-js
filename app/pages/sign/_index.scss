@@ -1,0 +1,59 @@
+#sign {
+
+    &.content {
+        padding: 0px;
+    }
+
+    ._title {
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 5px;
+
+        @include breakpoint(portrait) {
+            font-size: 20px;
+            padding-left: 40px;
+        }
+    }
+}
+
+.sign {
+    display: block;
+}
+
+.sign__item {
+    @include clear;
+    @include clickbtn;
+    padding: 15px;
+
+    @include breakpoint(portrait) {
+        padding: 30px;
+    }
+
+    ._name {
+        @include ellipsis();
+        @include media-obj;
+        font-size: 15px;
+        padding-top: 12px;
+
+        @include breakpoint(portrait) {
+            font-size: 26px;
+            padding-top: 22px;
+        }
+    }
+
+    ._arrow {
+        opacity: 0.6;
+        float: right;
+        width: 25px;
+        height: 25px;
+        margin-top: 13px;
+        transform: rotate(270deg);
+
+        @include breakpoint(portrait) {
+            width: 40px;
+            height: 40px;
+            margin-top: 22px;
+        }
+    }
+
+}

@@ -1,5 +1,5 @@
 {
-  "Back to hivewallet.com": "Back to hivewallet.com",
+  "Back to bitlox.io": "Back to bitlox.io",
   "Create new wallet": "Create new wallet",
   "Open existing wallet": "Open existing wallet",
   "We are about to generate your very own passphrase": "We're about to generate your very own passphrase",
@@ -59,6 +59,7 @@
   "Logout": "Logout",
   "Support": "Support",
   "Send": "Send",
+  "Sign": "Sign",
   "Receive": "Receive",
   "History": "History",
   "Tokens": "Tokens",
