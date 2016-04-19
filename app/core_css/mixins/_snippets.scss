@@ -64,6 +64,10 @@
   cursor: pointer;
 }
 
+@mixin monospaced {
+    font-family: monospace;
+    font-size: 1.05em;
+}
 
 // get rid of z-index glitching
 
@@ -92,5 +96,3 @@
 @mixin tabfocus() {
   outline: 2px solid $focus_color;
 }
-
-

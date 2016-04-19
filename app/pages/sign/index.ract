@@ -1,0 +1,46 @@
+
+<div class="sign">
+
+    <div class="sign__form">
+        <form>
+
+            <div class="sign__message">
+                <label class="_label" for="message">
+                    {{translate("Message")}}
+                </label>
+                <div class="_input_group">
+                    <input id="message"
+                           class="_input"
+                           type="text"
+                           autocorrect="off"
+                           autocapitalize="off"
+                           value="{{message}}" />
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    {{#signature}}
+    <div class="sign__form">
+        <div class="sign__result">
+            {{signature}}
+        </div>
+        <div on-click="clear-signature"
+             class="sign__btn">{{translate("Clear")}}</div>
+    </div>
+    {{/signature}}
+
+    {{^signature}}
+    {{#addresses}}
+    <div on-click="sign-message"
+         class="sign__item">
+        <span class="_arrow">{{>svg_arrow}}</span>
+        <h3 class="_name">{{this}}</h3>
+    </div>
+    {{/addresses}}
+    {{/signature}}
+
+</div>

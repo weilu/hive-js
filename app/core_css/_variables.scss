@@ -24,28 +24,37 @@ $base_line_height: 1.5;
 
 // Brand colours
 
-$grey--light: #FAFAFA;
-$grey: #CCCDC8;
+$bitlox-white: #F3F3F2;
+$bitlox-gray-light: #A6A6A7;
+$bitlox-gray: #5B5B5A;
+$bitlox-gray-dark: #3F3F40;
+$bitlox-red: #860B0B;
+$bitlox-red-dark: #5A1010;
+$bitlox-green: #0B862E;
+$bitlox-yellow: #93911B;
+$bitlox-black: #171616;
 
-$blue: #58A1FF;
-$yellow: #FBC12C;
-$dark-blue: #102E42;
+$grey--light: $bitlox-gray-light;
+$grey: $bitlox-gray;
 
-$green: #9AD25C;
-$red: #FC8276;
+$blue: $bitlox-red;
+$yellow: $bitlox-yellow;
+$dark-blue: $bitlox-red-dark;
 
-$purple: #2E2B44;
-$purple--light: #464368;
-$purple--highlight: #858DF0;
+$green: $bitlox-green;
+$red: $bitlox-red;
 
-$silver: #949da1;
+$purple: $bitlox-red-dark;
+$purple--light: $bitlox-red;
+$purple--highlight: $bitlox-white;
+
+$silver: $bitlox-white;
 
 
 // Sometimes abstract terms are useful:
 
-$foreground:          $purple;
-$background:          #FDFDFD;
+$foreground:          $bitlox-white;
+$background:          $bitlox-black;
 
 $focus_color:         #4fa1fd;
 $alert_color:         #fd9833;
-

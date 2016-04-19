@@ -4,6 +4,7 @@ var Ractive = require('hive-ractive')
 var emitter = require('hive-emitter')
 var sync = require('hive-wallet').sync
 var getWallet = require('hive-wallet').getWallet
+var openSupportModal = require('hive-modal-support')
 var satoshiToBtc = require('hive-convert').satoshiToBtc
 var toFixedFloor = require('hive-convert').toFixedFloor
 var Big = require('big.js')
@@ -47,9 +48,8 @@ module.exports = function(el){
     ractive.set('bitcoinBalance', getWallet().getBalance())
   })
 
-  ractive.on('toggle', function(){
-    window.scrollTo(0, 0);
-    emitter.emit('toggle-menu', !ractive.get('menuOpen'))
+  ractive.on('support', function(){
+    openSupportModal()
   })
 
   function toggleIcon(open){
