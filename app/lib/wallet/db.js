@@ -1,7 +1,7 @@
 'use strict';
 
 var PouchDB = require('pouchdb')
-var db = new PouchDB('hive-local')
+var db = new PouchDB('hive-local' , {adapter: 'websql'})
 
 var credentials = "credentials"
 

@@ -8,7 +8,7 @@ var randAvatarIndex = require('hive-avatar').randAvatarIndex
 var encrypt = AES.encrypt
 var decrypt = AES.decrypt
 
-var db = new PouchDB('hive')
+var db = new PouchDB('hive' , {adapter: 'websql'})
 var remote = null
 var id = null
 var sercret = null
