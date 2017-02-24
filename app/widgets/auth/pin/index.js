@@ -89,6 +89,10 @@ module.exports = function(prevPage, data){
     })
   })
 
+  ractive.on('reset-pin', function() {
+    Hive.resetPin(ractive.onSyncDone)
+  })
+
   ractive.on('back', function(){
     if(prevPage) prevPage(data)
     ractive.teardown()
@@ -100,11 +104,13 @@ module.exports = function(prevPage, data){
   }
 
   function openWithPin(){
-    Hive.openWalletWithPin(getPin(), ractive.getNetwork(), ractive.onSyncDone)
+    Hive.openWalletWithPin(getPin(), ractive.getNetwork(),
+                           ractive.onSyncDone, null, ractive.onBalanceDone)
   }
 
   function setPin(){
-    Hive.setPin(getPin(), ractive.getNetwork(), ractive.onSyncDone)
+    Hive.setPin(getPin(), ractive.getNetwork(),
+                           ractive.onSyncDone, null, ractive.onBalanceDone)
   }
 
   return ractive

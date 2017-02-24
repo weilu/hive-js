@@ -46,7 +46,7 @@ Click on the bottom link "fix this" to create an admin user, say:
 
 ### Profit
 
-    DB_HOST=127.0.0.1 DB_PORT=5984 DB_USER=admin DB_PASSWORD=password COOKIE_SALT=secret PROXY_URL=https://hive-proxy.herokuapp.com npm run dev
+    DB_HOST=127.0.0.1 DB_PORT=5984 DB_USER=admin DB_PASSWORD=password COOKIE_SALT=secret PROXY_URL=https://hive-proxy.herokuapp.com?url= npm run dev
     open http://localhost:8080
 
 Optional environment variables:
@@ -63,6 +63,19 @@ This project has js & css live reload setup. If you wish to use it to boost your
 1. [Install Vagrant](http://www.vagrantup.com/downloads.html)
 2. symlink the playbook file into place: `ln -s path/to/ansible/repo provisioners` (Windows users can add directory to %PATH%)
 3. `vagrant up` or `vagrant reload --provision`
+
+### Deploy to Heroku
+
+After all the regular heroku setup and hive-js setup as layed out above, install the heroku-hive-deploy plugin:
+
+    # one-time install
+    plugins:install https://github.com/hone/heroku-hive-deploy.git
+
+    # deploy from your local hive-js dir:
+    heroku deploy:hive `pwd`
+
+    # alternatively, you can also deploy from a git uri:
+    heroku deploy:hive <git uri>
 
 ## Contributing
 

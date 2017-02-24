@@ -20,10 +20,15 @@ module.exports = function (){
   if(isProduction()){
     app.set('trust proxy', true)
     var proxyHost = process.env.PROXY_URL.replace("https://", '')
+    var proxyQueryIndex = proxyHost.indexOf('/?')
+    if(proxyQueryIndex > 0) {
+      proxyHost = proxyHost.substring(0, proxyQueryIndex)
+    }
     app.use(helmet.csp({
       'default-src': ["'self'"],
+      'child-src': ["'self'", "blob:"],
       'connect-src': [
-        "'self'",
+        "'self'", "blob:",
         'api.bitcoinaverage.com', 'chain.so', // tickers
         'btc.blockr.io', 'tbtc.blockr.io', 'ltc.blockr.io', // blockchain APIs
         process.env.DB_HOST, proxyHost
@@ -40,9 +45,9 @@ module.exports = function (){
     app.use(helmet.nosniff())
     app.use(helmet.xframe('sameorigin'))
 
-    var ninetyDaysInMilliseconds = 90 * 24 * 60 * 60 * 1000
+    var hundredEightyDaysInMilliseconds = 180 * 24 * 60 * 60 * 1000
     app.use(helmet.hsts({
-      maxAge: ninetyDaysInMilliseconds,
+      maxAge: hundredEightyDaysInMilliseconds,
       includeSubdomains: true
     }))
   }
@@ -113,6 +118,15 @@ module.exports = function (){
     auth.disablePin(id, pin, function(err){
       if(err) return res.status(400).send(err)
       res.status(200).send()
+    })
+  })
+
+  app.get('/reset', function(req, res){
+    var name = req.query.wallet_id
+    if (!name) return res.status(400).json({error: 'Bad request'});
+
+    auth.resetPin(name, function(err){
+      res.status(200).send(err)
     })
   })
 

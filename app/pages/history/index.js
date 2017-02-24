@@ -19,24 +19,20 @@ module.exports = function(el){
         var date = new Date(timestamp)
         return strftime('%b %d %l:%M %p', date)
       },
-      truncate: function(amount) {
-        if(Math.abs(amount) > 0.00001) {
-          return toFixedFloor(amount, 5)
-        } else {
-          return amount
-        }
-      },
-      satoshiToBtc: satoshiToBtc
+      satoshiToBtc: satoshiToBtc,
+      loadingTx: true
     }
   })
 
-  emitter.on('transactions-loaded', function(newTxs){
+  emitter.on('append-transactions', function(newTxs){
     Array.prototype.unshift.apply(transactions, newTxs)
     ractive.set('transactions', transactions)
+    ractive.set('loadingTx', false)
   })
 
-  emitter.on('update-transactions', function(newTxs) {
+  emitter.on('set-transactions', function(newTxs) {
     ractive.set('transactions', newTxs)
+    ractive.set('loadingTx', false)
   })
 
   ractive.on('show-detail', function(event) {

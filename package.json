@@ -1,6 +1,6 @@
 {
   "name": "hive-js",
-  "version": "0.2.0",
+  "version": "0.3.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -36,9 +36,8 @@
     "async": "~0.9.0",
     "autoprefixer": "^2.2.0",
     "big.js": "^2.5.0",
-    "bitcoinjs-lib": "^1.0.0",
     "body-parser": "^1.6.2",
-    "browserify": "^5.9.1",
+    "browserify": "^6.3.2",
     "browserify-zepto": "~1.1.2",
     "browsernizr": "git://github.com/weilu/browsernizr#indexedDB",
     "compression": "^1.0.10",
@@ -50,7 +49,6 @@
     "events": "^1.0.0",
     "express": "^4.8.2",
     "fastclick": "~1.0.1",
-    "folderify": "~0.6.0",
     "geomodel": "~0.1.2",
     "glob": "^3.2.9",
     "glob-watcher": "0.0.6",
@@ -58,7 +56,7 @@
     "minimatch": "^1.0.0",
     "mkdirp": "^0.5.0",
     "node-sass": "^0.9.3",
-    "pouchdb": "2.2.3",
+    "pouchdb": "^3.2.0",
     "ractify": "~0.4.0",
     "ractive": "~0.4.0",
     "request": "^2.39.0",
@@ -77,6 +75,7 @@
     ]
   },
   "engines": {
-    "node": ">=0.10.26"
+    "node": "~0.10.26",
+    "npm": "^2.1.0"
   }
 }

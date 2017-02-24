@@ -1,6 +1,7 @@
 'use strict';
 
-var worker = new Worker('./worker.js')
+var work = require('webworkify')
+var worker = work(require('./worker.js'))
 var auth = require('./auth')
 var db = require('./db')
 var emitter = require('hive-emitter')
@@ -10,10 +11,7 @@ var denominations = require('hive-denomination')
 var Wallet = require('cb-wallet')
 var validateSend = require('./validator')
 var rng = require('secure-random').randomBuffer
-
-var Bitcoin = require('bitcoinjs-lib')
-var Transaction = Bitcoin.Transaction
-var HDNode = Bitcoin.HDNode
+var bitcoin = require('bitcoinjs-lib')
 
 var wallet = null
 var seed = null
@@ -47,18 +45,38 @@ function createWallet(passphrase, network, callback) {
   })
 }
 
-function setPin(pin, network, callback) {
+function callbackError(err, callbacks) {
+  callbacks.forEach(function(fn) {
+    if(fn != null) fn(err)
+  })
+}
+
+function setPin(pin, network, done, unspentsDone, balanceDone) {
+  var callbacks = [done, unspentsDone, balanceDone]
   auth.register(id, pin, function(err, token){
-    if(err) return callback(err.error);
+    if(err) return callbackError(err.error, callbacks);
 
     emitter.emit('wallet-auth', {token: token, pin: pin})
 
     var encrypted = AES.encrypt(seed, token)
     db.saveEncrypedSeed(id, encrypted, function(err){
-      if(err) return callback(err);
+      if(err) return callbackError(err.error, callbacks);
 
       var accounts = getAccountsFromSeed(network)
-      initWallet(accounts.externalAccount, accounts.internalAccount, network, callback)
+      initWallet(accounts.externalAccount, accounts.internalAccount, network,
+                 done, unspentsDone, balanceDone)
+    })
+  })
+}
+
+function resetPin(callback) {
+  db.getCredentials(function(err, credentials){
+    if(err) return callback(err);
+
+    auth.resetPin(credentials.id, function() {
+      db.deleteCredentials(credentials, function(){
+        callback('user_deleted')
+      })
     })
   })
 }
@@ -67,9 +85,10 @@ function disablePin(pin, callback) {
   auth.disablePin(id, pin, callback)
 }
 
-function openWalletWithPin(pin, network, syncDone) {
+function openWalletWithPin(pin, network, done, unspentsDone, balanceDone) {
+  var callbacks = [done, unspentsDone, balanceDone]
   db.getCredentials(function(err, credentials){
-    if(err) return syncDone(err);
+    if(err) return callbackError(err, callbacks);
 
     var id = credentials.id
     var encryptedSeed = credentials.seed
@@ -77,18 +96,18 @@ function openWalletWithPin(pin, network, syncDone) {
       if(err){
         if(err.error === 'user_deleted') {
           return db.deleteCredentials(credentials, function(){
-            syncDone(err.error);
+            callbackError(err.error, callbacks);
           })
         }
-        return syncDone(err.error)
+        return callbackError(err.error, callbacks)
       }
 
+      assignSeedAndId(AES.decrypt(encryptedSeed, token))
       emitter.emit('wallet-auth', {token: token, pin: pin})
 
-      assignSeedAndId(AES.decrypt(encryptedSeed, token))
-
       var accounts = getAccountsFromSeed(network)
-      initWallet(accounts.externalAccount, accounts.internalAccount, network, syncDone)
+      initWallet(accounts.externalAccount, accounts.internalAccount, network,
+                 done, unspentsDone, balanceDone)
     })
   })
 }
@@ -102,8 +121,8 @@ function assignSeedAndId(s) {
 function getAccountsFromSeed(networkName, done) {
   emitter.emit('wallet-opening', 'Synchronizing Wallet')
 
-  var network = Bitcoin.networks[networkName]
-  var accountZero = HDNode.fromSeedHex(seed, network).deriveHardened(0)
+  var network = bitcoin.networks[networkName]
+  var accountZero = bitcoin.HDNode.fromSeedHex(seed, network).deriveHardened(0)
 
   return {
     externalAccount: accountZero.derive(0),
@@ -111,40 +130,60 @@ function getAccountsFromSeed(networkName, done) {
   }
 }
 
-function initWallet(externalAccount, internalAccount, networkName, done){
-  var network = Bitcoin.networks[networkName]
-  new Wallet(externalAccount, internalAccount, networkName, function(err, w) {
-    if(err) return done(err)
+function initWallet(externalAccount, internalAccount, networkName, done, unspentsDone, balanceDone){
+  var network = bitcoin.networks[networkName]
 
-    wallet = w
-    wallet.denomination = denominations[networkName].default
+  wallet = new Wallet(externalAccount, internalAccount, networkName, function(err, w) {
+    if(err) return done(err)
 
     var txObjs = wallet.getTransactionHistory()
     done(null, txObjs.map(function(tx) {
       return parseTx(wallet, tx)
     }))
-  })
+  }, unspentsDone, balanceDone)
+
+  wallet.denomination = denominations[networkName].default
 }
 
 function parseTx(wallet, tx) {
   var id = tx.getId()
   var metadata = wallet.txMetadata[id]
-  var toAddress
-  if(metadata.value <= 0) {
-    var network = Bitcoin.networks[wallet.networkName]
-    toAddress = Bitcoin.Address.fromOutputScript(tx.outs[0].script, network).toString()
-  }
+  var network = bitcoin.networks[wallet.networkName]
 
   var timestamp = metadata.timestamp
   timestamp = timestamp ? timestamp * 1000 : new Date().getTime()
 
+  var node = wallet.txGraph.findNodeById(id)
+  var prevOutputs = node.prevNodes.reduce(function(inputs, n) {
+    inputs[n.id] = n.tx.outs
+    return inputs
+  }, {})
+
+  var inputs = tx.ins.map(function(input) {
+    var buffer = new Buffer(input.hash)
+    Array.prototype.reverse.call(buffer)
+    var inputTxId = buffer.toString('hex')
+
+    return prevOutputs[inputTxId][input.index]
+  })
+
   return {
     id: id,
     amount: metadata.value,
-    toAddress: toAddress,
     timestamp: timestamp,
     confirmations: metadata.confirmations,
-    fee: metadata.fee
+    fee: metadata.fee,
+    ins: parseOutputs(inputs, network),
+    outs: parseOutputs(tx.outs, network)
+  }
+
+  function parseOutputs(outputs, network) {
+    return outputs.map(function(output){
+      return {
+        address: bitcoin.Address.fromOutputScript(output.script, network).toString(),
+        amount: output.value
+      }
+    })
   }
 }
 
@@ -177,6 +216,7 @@ module.exports = {
   openWalletWithPin: openWalletWithPin,
   createWallet: createWallet,
   setPin: setPin,
+  resetPin: resetPin,
   disablePin: disablePin,
   getWallet: getWallet,
   walletExists: walletExists,
