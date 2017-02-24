@@ -1,17 +1,8 @@
 <div class="header">
 
-  {{#menuOpen}}
-    <div class="toggle_overlay" on-click="toggle"></div>
-  {{/menuOpen}}
-
-  <div id="menu_btn" class="header__toggle {{#menuOpen}}is_open{{/menuOpen}}" on-click="toggle">
+  <div id="menu_btn" class="header__toggle" on-click="support">
     <span class="_icon">
-      {{^menuOpen}}
-        {{>svg_settings}}
-      {{/menuOpen}}
-      {{#menuOpen}}
-        {{>svg_close}}
-      {{/menuOpen}}
+      {{>svg_help}}
     </span>
   </div>
 
@@ -36,4 +27,3 @@
   </div>
 
 </div>
-

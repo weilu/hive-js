@@ -3,6 +3,8 @@
   margin: 0 auto;
   width: 200px;
   height: 200px;
+  padding: 10px;
+  background-color: $foreground;
 }
 
 .qr__container {
@@ -88,4 +90,3 @@
     }
   }
 }
-

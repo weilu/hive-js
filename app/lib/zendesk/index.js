@@ -13,10 +13,9 @@ function sendRequest(paramsObj, callback) {
   }).join('&')
 
   var uri = "https://hivewallet.zendesk.com/requests/embedded/create/?" + params
-  var corsUri = process.env.PROXY_URL + "?url=" + encodeURIComponent(uri)
 
   xhr({
-    uri: corsUri
+      uri: uri
   }, function(err, resp, body) {
     if (resp.statusCode !== 201) {
       console.error(body)
